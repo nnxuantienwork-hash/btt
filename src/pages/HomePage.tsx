@@ -11,9 +11,15 @@ export default function HomePage() {
 
   const topTicker = newsArticles.slice(0, 4);
   const featuredCarousel = newsArticles.slice(0, 8);
-  const thanhphoNews = newsArticles.filter(a => a.categorySlug === '/thanh-pho').slice(0, 4);
   const mostRead = getMostRead().slice(0, 5);
   const radioEpisodes = radioSections[0]?.episodes || [];
+
+  // Get articles by category
+  const thanhphoNews = newsArticles.filter(a => a.categorySlug === '/thanh-pho').slice(0, 6);
+  const phuongxaNews = newsArticles.filter(a => a.categorySlug === '/168-phuong-xa').slice(0, 6);
+  const gocNhinNews = newsArticles.filter(a => a.categorySlug === '/goc-nhin').slice(0, 6);
+  const doiSongNews = newsArticles.filter(a => a.categorySlug === '/doi-song').slice(0, 6);
+  const giaiTriNews = newsArticles.filter(a => a.categorySlug === '/giai-tri').slice(0, 6);
 
   // Auto-scroll featured carousel
   useEffect(() => {
@@ -33,7 +39,7 @@ export default function HomePage() {
   const currentFeatured = featuredCarousel[currentFeaturedIdx];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-white">
       <main className="max-w-[1280px] mx-auto px-6 py-8">
 
         {/* SECTION 1: TOP 4 NEWS TICKER */}
@@ -67,7 +73,7 @@ export default function HomePage() {
           </div>
         </motion.section>
 
-        {/* SECTION 2: FEATURED HERO CAROUSEL + HIGHLIGHTED SECTION */}
+        {/* SECTION 2: FEATURED HERO CAROUSEL + HIGHLIGHTED ARTICLES */}
         <motion.section
           className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12"
           initial={{ opacity: 0 }}
@@ -119,71 +125,52 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Right: Highlighted Articles Section (Style Image 3) */}
+          {/* Right: Highlighted Articles (Vertical List with Dividers) */}
           <motion.div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                <h2 className="text-lg font-bold text-white">Bài nổi bật</h2>
-              </div>
-
-              <div className="divide-y divide-gray-100">
-                {mostRead.map((article, idx) => (
-                  <Link
-                    key={article.id}
-                    to={`/bai-viet/${article.id}`}
-                    className="group p-4 hover:bg-blue-50 transition-colors duration-200 flex gap-3"
-                  >
-                    <div className="relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden shadow-sm">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col justify-between">
-                      <h3 className="text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                        {article.title}
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1">{formatViews(article.views)} lượt xem</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="px-6 py-4 bg-gray-50 text-center">
+            <div className="space-y-0">
+              {mostRead.map((article, idx) => (
                 <Link
-                  to="/thanh-pho"
-                  className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                  key={article.id}
+                  to={`/bai-viet/${article.id}`}
+                  className="group py-4 px-4 hover:bg-gray-50 transition-colors duration-200 flex gap-3 border-b border-gray-200 last:border-0"
                 >
-                  Xem tất cả →
+                  <div className="relative flex-shrink-0 w-16 h-16 rounded overflow-hidden">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <h3 className="text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-xs text-slate-500">{formatViews(article.views)} lượt xem</p>
+                  </div>
                 </Link>
-              </div>
+              ))}
             </div>
           </motion.div>
         </motion.section>
 
-        {/* SECTION 3: RADIO SECTION */}
+        {/* SECTION 3: RADIO SECTION - Simple with dividers */}
         <motion.section
-          className="mb-12 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-8"
+          className="mb-12 border-y border-gray-200 py-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <div className="mb-6 pb-4 border-b border-orange-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Radio Nổi bật</h2>
-                <p className="text-sm text-slate-600 mt-1">Nghe các chương trình hàng ngày</p>
-              </div>
-              <Link
-                to="/radio"
-                className="px-6 py-2.5 bg-orange-600 text-white rounded-full font-semibold text-sm hover:bg-orange-700 transition-colors"
-              >
-                Khám phá thêm
-              </Link>
+          <div className="mb-6 pb-6 border-b border-gray-200 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Radio Nổi bật</h2>
             </div>
+            <Link
+              to="/radio"
+              className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              Xem tất cả →
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -191,22 +178,21 @@ export default function HomePage() {
               <Link
                 key={episode.id}
                 to={`/radio/tap/${episode.id}`}
-                className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                className="group"
               >
-                <div className="relative h-32 overflow-hidden bg-gradient-to-br from-orange-200 to-amber-200">
+                <div className="relative h-32 overflow-hidden rounded-lg bg-gray-200 mb-3">
                   <img
                     src={episode.thumbnail}
                     alt={episode.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
 
-                <div className="p-4">
-                  <p className="text-xs font-semibold text-orange-600 uppercase mb-2">
+                <div>
+                  <p className="text-xs font-bold text-blue-600 uppercase mb-1">
                     {episode.category}
                   </p>
-                  <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-orange-600 transition-colors mb-2">
+                  <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors mb-2">
                     {episode.title}
                   </h3>
                   <div className="flex items-center justify-between text-xs text-slate-500">
@@ -219,7 +205,7 @@ export default function HomePage() {
           </div>
         </motion.section>
 
-        {/* SECTION 4: MAIN CATEGORY */}
+        {/* SECTION 4: THÀNH PHỐ HÔM NAY - Featured Left + Grid Right */}
         <motion.section
           className="mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -232,40 +218,243 @@ export default function HomePage() {
               <h2 className="text-2xl font-bold text-slate-900">Thành Phố Hôm Nay</h2>
               <Link
                 to="/thanh-pho"
-                className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
               >
                 Xem tất cả →
               </Link>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {thanhphoNews.map((article) => (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Featured large item */}
+            <Link
+              to={`/bai-viet/${thanhphoNews[0]?.id}`}
+              className="group lg:col-span-2 relative h-72 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+            >
+              <img
+                src={thanhphoNews[0]?.image}
+                alt={thanhphoNews[0]?.title}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <h3 className="font-bold text-white text-lg line-clamp-2">{thanhphoNews[0]?.title}</h3>
+              </div>
+            </Link>
+
+            {/* Grid items */}
+            <div className="lg:col-span-2 space-y-4">
+              {thanhphoNews.slice(1, 3).map((article) => (
+                <Link key={article.id} to={`/bai-viet/${article.id}`} className="group flex gap-3">
+                  <div className="w-20 h-20 flex-shrink-0 rounded overflow-hidden">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {article.title}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* SECTION 5: 168 PHƯỜNG - XÃ - 4 Column Grid */}
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="mb-6 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900">168 Phường - Xã</h2>
               <Link
-                key={article.id}
-                to={`/bai-viet/${article.id}`}
-                className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                to="/168-phuong-xa"
+                className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
               >
-                <div className="relative h-48 overflow-hidden">
+                Xem tất cả →
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {phuongxaNews.map((article) => (
+              <Link key={article.id} to={`/bai-viet/${article.id}`} className="group">
+                <div className="relative h-40 rounded-lg overflow-hidden shadow-md mb-3 hover:shadow-lg transition-shadow">
                   <img
                     src={article.image}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
+                <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                  {article.title}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        </motion.section>
 
-                <div className="p-4">
-                  <div className="mb-2">
-                    <CategoryBadge category={article.category} />
-                  </div>
-                  <h3 className="font-bold text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors mb-2">
+        {/* SECTION 6: ĐỜI SỐNG - Horizontal List with Numbers */}
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="mb-6 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900">Đời Sống</h2>
+              <Link
+                to="/doi-song"
+                className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+              >
+                Xem tất cả →
+              </Link>
+            </div>
+          </div>
+
+          <div className="space-y-0">
+            {doiSongNews.map((article, idx) => (
+              <Link
+                key={article.id}
+                to={`/bai-viet/${article.id}`}
+                className="group py-4 px-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors flex gap-4"
+              >
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
+                  {idx + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2">
                     {article.title}
                   </h3>
-                  <p className="text-sm text-slate-600 line-clamp-2 mb-3">
-                    {article.excerpt}
-                  </p>
-                  <p className="text-xs text-slate-500">{article.timestamp}</p>
+                  <p className="text-xs text-slate-500 mt-1">{article.timestamp}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* SECTION 7: GÓC NHÌN - Left Featured + Right List */}
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="mb-6 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900">Góc Nhìn</h2>
+              <Link
+                to="/goc-nhin"
+                className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+              >
+                Xem tất cả →
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Featured large item */}
+            <Link
+              to={`/bai-viet/${gocNhinNews[0]?.id}`}
+              className="group lg:col-span-2 relative h-80 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+            >
+              <img
+                src={gocNhinNews[0]?.image}
+                alt={gocNhinNews[0]?.title}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <h3 className="font-bold text-white line-clamp-3">{gocNhinNews[0]?.title}</h3>
+              </div>
+            </Link>
+
+            {/* Right list */}
+            <div className="space-y-0">
+              {gocNhinNews.slice(1, 4).map((article) => (
+                <Link
+                  key={article.id}
+                  to={`/bai-viet/${article.id}`}
+                  className="group py-3 px-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                >
+                  <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {article.title}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* SECTION 8: GIẢI TRÍ - 2 Large Featured + 2 Small */}
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="mb-6 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-900">Giải Trí</h2>
+              <Link
+                to="/giai-tri"
+                className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+              >
+                Xem tất cả →
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* First two: large */}
+            {giaiTriNews.slice(0, 2).map((article) => (
+              <Link
+                key={article.id}
+                to={`/bai-viet/${article.id}`}
+                className="group md:col-span-1 relative h-64 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+              >
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="font-bold text-white text-sm line-clamp-2">{article.title}</h3>
+                </div>
+              </Link>
+            ))}
+
+            {/* Last two: small with image on left */}
+            {giaiTriNews.slice(2, 4).map((article) => (
+              <Link
+                key={article.id}
+                to={`/bai-viet/${article.id}`}
+                className="group flex gap-3 md:col-span-1"
+              >
+                <div className="w-24 h-24 flex-shrink-0 rounded overflow-hidden">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {article.title}
+                  </h3>
                 </div>
               </Link>
             ))}
