@@ -107,7 +107,7 @@ export default function ArticleCard({ article, variant = 'default', delay = 0 }:
     >
       <div
         ref={scrollRef}
-        className="scroll-animate-in group news-card bg-white rounded-[16px] overflow-hidden shadow-md border-0"
+        className="scroll-animate-in group news-card bg-white rounded-[16px] overflow-hidden shadow-md border-0 hover:shadow-2xl hover:-translate-y-1"
         style={{ transitionDelay: `${delay}ms` }}
       >
         <div className="relative card-image-container aspect-video overflow-hidden">
