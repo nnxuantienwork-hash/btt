@@ -505,6 +505,24 @@ input[type="range"]::-moz-range-track {
   }
 }
 
+@keyframes pulse-indicator {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Carousel indicators animation */
+.carousel-nav button {
+  animation: pulse-indicator 2s ease-in-out infinite;
+}
+
+.carousel-nav button.active {
+  animation: none;
+}
+
 /* Clean link effects without icons */
 a:hover {
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -523,4 +541,14 @@ h2:not(.no-animate) {
 /* Most Read Carousel effect */
 .carousel-item {
   animation: carouselSlide 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Radio section colors */
+.radio-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input {
+  transition: all 0.2s ease;
 }
