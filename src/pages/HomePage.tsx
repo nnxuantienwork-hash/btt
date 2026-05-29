@@ -1,30 +1,21 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, Eye, TrendingUp, Flame } from 'lucide-react';
+import { useState } from 'react';
 import { newsArticles, getMostRead, formatViews } from '../data/newsData';
 import ArticleCard from '../components/ArticleCard';
 import CategoryBadge from '../components/CategoryBadge';
 
 export default function HomePage() {
-  const featuredArticle = newsArticles[0];
-  const breakingNews = newsArticles.filter(a => a.isBreaking).slice(0, 4);
-  const thanhphoNews = newsArticles.filter(a => a.categorySlug === '/thanh-pho').slice(0, 3);
-  const phuongxaNews = newsArticles.filter(a => a.categorySlug === '/168-phuong-xa').slice(0, 3);
-  const doiSongNews = newsArticles.filter(a => a.categorySlug === '/doi-song').slice(0, 3);
-  const gocNhinNews = newsArticles.filter(a => a.categorySlug === '/goc-nhin').slice(0, 3);
-  const giaiTriNews = newsArticles.filter(a => a.categorySlug === '/giai-tri').slice(0, 3);
-  const mostRead = getMostRead();
+  const [currentMostReadIdx, setCurrentMostReadIdx] = useState(0);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
+  const featuredArticle = newsArticles[0];
+  const topTicker = newsArticles.slice(0, 4);
+  const thanhphoNews = newsArticles.filter(a => a.categorySlug === '/thanh-pho').slice(0, 4);
+  const phuongxaNews = newsArticles.filter(a => a.categorySlug === '/168-phuong-xa').slice(0, 4);
+  const doiSongNews = newsArticles.filter(a => a.categorySlug === '/doi-song').slice(0, 4);
+  const gocNhinNews = newsArticles.filter(a => a.categorySlug === '/goc-nhin').slice(0, 4);
+  const giaiTriNews = newsArticles.filter(a => a.categorySlug === '/giai-tri').slice(0, 4);
+  const mostRead = getMostRead();
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -36,204 +27,261 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-white">
       <main className="max-w-[1280px] mx-auto px-6 py-8">
 
-        {/* SECTION 1: FEATURED HERO + LATEST NEWS SIDEBAR */}
+        {/* SECTION 1: TOP 4 NEWS TICKER */}
         <motion.section
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12"
+          className="mb-10 border-b border-gray-200 pb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {topTicker.map((article, idx) => (
+              <Link
+                key={article.id}
+                to={`/bai-viet/${article.id}`}
+                className="group flex gap-3 pb-4 border-b lg:border-b-0 hover:opacity-80 transition-opacity"
+              >
+                <div className="w-20 h-16 flex-shrink-0 overflow-hidden rounded">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {article.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* SECTION 2: FEATURED HERO + MOST READ CAROUSEL */}
+        <motion.section
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12"
           initial="hidden"
           animate="visible"
-          variants={containerVariants}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+          }}
         >
           {/* Left: Large Featured Article */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <Link to={`/bai-viet/${featuredArticle.id}`} className="group relative block h-[420px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <Link to={`/bai-viet/${featuredArticle.id}`} className="group relative block h-[500px] rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
               <img
                 src={featuredArticle.image}
                 alt={featuredArticle.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-
-              <div className="absolute top-4 left-4">
-                <div className="flex items-center gap-2 bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-lg">
-                  <Flame className="w-3.5 h-3.5" />
-                  Nổi bật
-                </div>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
 
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="mb-2">
                   <CategoryBadge category={featuredArticle.category} />
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-amber-300 transition-colors line-clamp-3">
+                <h1 className="text-3xl font-bold text-white mb-2 leading-tight line-clamp-3">
                   {featuredArticle.title}
                 </h1>
-                <p className="text-sm text-gray-200 line-clamp-2 mb-4">{featuredArticle.excerpt}</p>
-                <div className="flex items-center gap-4 text-xs text-gray-300">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {featuredArticle.timestamp}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Eye className="w-3.5 h-3.5" />
-                    {formatViews(featuredArticle.views)}
-                  </span>
-                </div>
               </div>
             </Link>
           </motion.div>
 
-          {/* Right: Most Read Articles */}
+          {/* Right: Most Read Carousel */}
           <motion.div variants={itemVariants} className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 h-full">
-              <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-5">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-amber-400" />
-                  <h2 className="text-lg font-bold text-white">Đọc nhiều nhất</h2>
-                </div>
-              </div>
+            <div className="h-full flex flex-col">
+              <h2 className="text-xl font-bold text-slate-900 mb-4">Bài nổi bật</h2>
 
-              <div className="divide-y divide-gray-100">
-                {mostRead.map((article, idx) => (
-                  <Link
-                    key={article.id}
-                    to={`/bai-viet/${article.id}`}
-                    className="p-4 hover:bg-gray-50 transition-colors duration-200 group flex gap-3"
-                  >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-slate-700 flex items-center justify-center text-white font-bold text-sm">
-                      {idx + 1}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                        {article.title}
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1">{formatViews(article.views)} lượt xem</p>
-                    </div>
-                  </Link>
+              {/* Large featured carousel image */}
+              <Link to={`/bai-viet/${mostRead[currentMostReadIdx]?.id}`} className="group relative block aspect-square rounded-lg overflow-hidden shadow-md mb-4">
+                <img
+                  src={mostRead[currentMostReadIdx]?.image}
+                  alt={mostRead[currentMostReadIdx]?.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </Link>
+
+              {/* Article title and info */}
+              <Link to={`/bai-viet/${mostRead[currentMostReadIdx]?.id}`} className="group mb-4">
+                <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-2">
+                  {mostRead[currentMostReadIdx]?.title}
+                </h3>
+                <p className="text-xs text-slate-500">{formatViews(mostRead[currentMostReadIdx]?.views)} lượt xem</p>
+              </Link>
+
+              {/* Navigation dots */}
+              <div className="flex gap-2">
+                {mostRead.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentMostReadIdx(idx)}
+                    className={`h-1 flex-1 rounded transition-all ${
+                      idx === currentMostReadIdx ? 'bg-slate-900' : 'bg-slate-300'
+                    }`}
+                  />
                 ))}
               </div>
             </div>
           </motion.div>
         </motion.section>
 
-        {/* SECTION 2: BREAKING NEWS TICKER */}
-        {breakingNews.length > 0 && (
-          <motion.section
-            className="mb-12 bg-gradient-to-r from-red-600 to-red-700 rounded-xl overflow-hidden shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5">
-              {breakingNews.map((article) => (
-                <Link
-                  key={article.id}
-                  to={`/bai-viet/${article.id}`}
-                  className="flex items-start gap-3 p-3 bg-white/10 backdrop-blur rounded-lg hover:bg-white/20 transition-all duration-300 group"
-                >
-                  <Flame className="w-4 h-4 text-yellow-300 flex-shrink-0 mt-0.5" />
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-yellow-300 uppercase tracking-wide">Tin nóng</p>
-                    <h3 className="text-sm font-bold text-white line-clamp-2 group-hover:text-yellow-100 transition-colors">
-                      {article.title}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </motion.section>
-        )}
-
-        {/* SECTION 3: CATEGORY SECTIONS */}
+        {/* SECTION 3: DIVERSE CATEGORY LAYOUTS */}
         {[
-          { title: 'Thành Phố Hôm Nay', news: thanhphoNews, color: 'from-blue-600 to-blue-700', icon: '🏢', slug: '/thanh-pho' },
-          { title: '168 Phường - Xã', news: phuongxaNews, color: 'from-purple-600 to-purple-700', icon: '🏘️', slug: '/168-phuong-xa' },
-          { title: 'Đời Sống', news: doiSongNews, color: 'from-green-600 to-green-700', icon: '👥', slug: '/doi-song' },
-          { title: 'Góc Nhìn', news: gocNhinNews, color: 'from-cyan-600 to-cyan-700', icon: '💭', slug: '/goc-nhin' },
-          { title: 'Giải Trí', news: giaiTriNews, color: 'from-pink-600 to-pink-700', icon: '🎬', slug: '/giai-tri' },
-        ].map((section, sectionIdx) => (
+          {
+            title: 'Thành Phố Hôm Nay',
+            news: thanhphoNews,
+            layout: 'featured-grid',
+          },
+          {
+            title: '168 Phường - Xã',
+            news: phuongxaNews,
+            layout: 'simple-grid',
+          },
+          {
+            title: 'Đời Sống',
+            news: doiSongNews,
+            layout: 'left-featured',
+          },
+          {
+            title: 'Góc Nhìn',
+            news: gocNhinNews,
+            layout: 'horizontal-list',
+          },
+          {
+            title: 'Giải Trí',
+            news: giaiTriNews,
+            layout: 'simple-grid',
+          },
+        ].map((section, idx) => (
           <motion.section
             key={section.title}
             className="mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.5, delay: sectionIdx * 0.1 }}
+            transition={{ duration: 0.5 }}
           >
             {/* Section Header */}
-            <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className={`bg-gradient-to-br ${section.color} p-3 rounded-xl shadow-lg`}>
-                  <span className="text-2xl">{section.icon}</span>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900">{section.title}</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">{section.news.length} bài viết</p>
-                </div>
+            <div className="mb-6 pb-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-slate-900">{section.title}</h2>
+                <Link
+                  to={`/${section.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                >
+                  Xem tất cả →
+                </Link>
               </div>
-              <Link
-                to={section.slug}
-                className={`px-5 py-2.5 bg-gradient-to-br ${section.color} text-white rounded-full font-semibold text-sm hover:shadow-lg transition-all duration-300 hover:scale-105 whitespace-nowrap`}
-              >
-                Xem tất cả
-              </Link>
             </div>
 
-            {/* Articles Grid */}
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-50px' }}
-            >
-              {section.news.map((article, idx) => (
-                <motion.div key={article.id} variants={itemVariants}>
-                  <ArticleCard article={article} delay={idx * 50} />
-                </motion.div>
-              ))}
-            </motion.div>
+            {/* LAYOUT 1: Featured + Grid */}
+            {section.layout === 'featured-grid' && (
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <Link to={`/bai-viet/${section.news[0]?.id}`} className="group lg:col-span-2 relative h-64 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                  <img
+                    src={section.news[0]?.image}
+                    alt={section.news[0]?.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="font-bold text-white text-sm line-clamp-2">{section.news[0]?.title}</h3>
+                  </div>
+                </Link>
+
+                <div className="lg:col-span-2 space-y-4">
+                  {section.news.slice(1, 3).map((article) => (
+                    <Link key={article.id} to={`/bai-viet/${article.id}`} className="group flex gap-3">
+                      <div className="w-20 h-20 flex-shrink-0 rounded overflow-hidden">
+                        <img
+                          src={article.image}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                          {article.title}
+                        </h3>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* LAYOUT 2: Simple Grid */}
+            {section.layout === 'simple-grid' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {section.news.map((article) => (
+                  <Link key={article.id} to={`/bai-viet/${article.id}`} className="group">
+                    <div className="relative h-40 rounded-lg overflow-hidden shadow-md mb-3 hover:shadow-lg transition-shadow">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {article.title}
+                    </h3>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* LAYOUT 3: Left Featured + Right Vertical */}
+            {section.layout === 'left-featured' && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Link to={`/bai-viet/${section.news[0]?.id}`} className="group lg:col-span-2 relative h-80 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                  <img
+                    src={section.news[0]?.image}
+                    alt={section.news[0]?.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="font-bold text-white line-clamp-3">{section.news[0]?.title}</h3>
+                  </div>
+                </Link>
+
+                <div className="space-y-4">
+                  {section.news.slice(1, 4).map((article) => (
+                    <Link key={article.id} to={`/bai-viet/${article.id}`} className="group pb-3 border-b border-gray-200 last:border-0">
+                      <h3 className="font-bold text-sm text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors mb-1">
+                        {article.title}
+                      </h3>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* LAYOUT 4: Horizontal List */}
+            {section.layout === 'horizontal-list' && (
+              <div className="space-y-4">
+                {section.news.map((article, num) => (
+                  <Link key={article.id} to={`/bai-viet/${article.id}`} className="group flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600">
+                      {num + 1}
+                    </div>
+                    <div className="flex-1 border-b border-gray-200 pb-4 last:border-0">
+                      <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">
+                        {article.title}
+                      </h3>
+                      <p className="text-xs text-slate-500">{article.timestamp}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </motion.section>
         ))}
-
-        {/* SECTION 4: NEWSLETTER CTA */}
-        <motion.section
-          className="mt-16 mb-8 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 rounded-2xl p-8 md:p-12 shadow-2xl overflow-hidden relative"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -mr-48 -mt-48" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -ml-48 -mb-48" />
-
-          <div className="relative z-10">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex-1">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                  Nhận tin mới mỗi ngày
-                </h3>
-                <p className="text-lg text-gray-300 mb-6">
-                  Đăng ký nhận bản tin hàng ngày để cập nhật tin tức mới nhất về TP.HCM
-                </p>
-              </div>
-
-              <div className="w-full md:w-auto flex flex-col gap-3">
-                <input
-                  type="email"
-                  placeholder="Email của bạn"
-                  className="px-6 py-3.5 rounded-lg bg-white/15 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent backdrop-blur-sm"
-                />
-                <button className="px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
-                  Đăng ký ngay
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.section>
 
       </main>
     </div>

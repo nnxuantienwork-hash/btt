@@ -494,17 +494,18 @@ input[type="range"]::-moz-range-track {
   }
 }
 
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+@keyframes carouselSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  50% {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Button and Link Effects */
-button:hover,
+/* Clean link effects without icons */
 a:hover {
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -519,51 +520,7 @@ h2:not(.no-animate) {
   animation: scaleInCenter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.featured-hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.featured-hero:hover::after {
-  opacity: 1;
-}
-
-/* Breaking News Badge Pulse */
-.breaking-badge {
-  animation: glow 2s ease-in-out infinite;
-}
-
-/* Category Icon Animation */
-.category-icon {
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.category-icon:hover {
-  transform: scale(1.1) rotate(5deg);
-}
-
-/* Most Read Item Hover */
-.most-read-item {
-  position: relative;
-  overflow: hidden;
-}
-
-.most-read-item::before {
-  content: '';
-  position: absolute;
-  left: -100%;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.most-read-item:hover::before {
-  left: 100%;
+/* Most Read Carousel effect */
+.carousel-item {
+  animation: carouselSlide 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
